@@ -18,6 +18,10 @@
     [super viewDidLoad];
     // Do view setup here.
     self.tabStyle = NSTabViewControllerTabStyleUnspecified;
+    for (NSViewController *vc in self.childViewControllers) {
+        vc.view.wantsLayer = YES;
+        [vc.view.layer setBackgroundColor:[NSColor colorWithPatternImage:[NSImage imageNamed:@"bg"]].CGColor];
+    }
 }
 
 - (void)setRepresentedObject:(id)representedObject {

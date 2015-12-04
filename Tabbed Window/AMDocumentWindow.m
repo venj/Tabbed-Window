@@ -7,6 +7,7 @@
 //
 
 #import "AMDocumentWindow.h"
+#import <objc/runtime.h>
 
 @interface AMDocumentWindow () <NSToolbarDelegate>
 
@@ -17,6 +18,8 @@
 
 @implementation AMDocumentWindow
 {
+    void *_childVCOContext;
+    void *_tabOContext;
     void *_childViewControllersObservationContext;
     void *_selectedTabObservationContext;
 }
@@ -28,10 +31,27 @@
     [self.contentView setWantsLayer:YES];
     self.titleVisibility = NSWindowTitleHidden;
 
+    Ivar childVCOContext = class_getInstanceVariable(self.class, "_childViewControllersObservationContext");
+    ptrdiff_t cdiff = ivar_getOffset(childVCOContext);
+    _childVCOContext = (__bridge void *)self + cdiff;
+
+    Ivar tabOContext = class_getInstanceVariable(self.class, "_selectedTabObservationContext");
+    ptrdiff_t tdiff = ivar_getOffset(tabOContext);
+    _tabOContext = (__bridge void *)self + tdiff;
+
     _childViewControllersObservationContext = &_childViewControllersObservationContext;
     _selectedTabObservationContext = &_selectedTabObservationContext;
     
     return self;
+}
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+
+    self.styleMask |= NSFullSizeContentViewWindowMask;
+    self.titlebarAppearsTransparent = YES;
+    self.movableByWindowBackground = YES;
+    self.toolbar.showsBaselineSeparator = NO;
 }
 
 - (void)setContentViewController:(NSViewController * __nullable)contentViewController
