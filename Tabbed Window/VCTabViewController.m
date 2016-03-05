@@ -24,16 +24,5 @@
     }
 }
 
-- (void)setRepresentedObject:(id)representedObject {
-    [super setRepresentedObject:representedObject];
-
-    [self.childViewControllers makeObjectsPerformSelector:@selector(setRepresentedObject:) withObject:representedObject];
-}
-
-- (void)addChildViewController:(nonnull NSViewController *)childViewController
-{
-    [super addChildViewController:childViewController];
-    [childViewController setRepresentedObject:self.representedObject];
-}
 
 @end
